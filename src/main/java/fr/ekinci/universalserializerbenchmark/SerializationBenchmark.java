@@ -14,18 +14,14 @@ import fr.ekinci.universalserializerbenchmark.pojo.ComplexTestClass;
 import fr.ekinci.universalserializerbenchmark.protocolbuffers.Protobuf;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Mode;
-
 import java.io.IOException;
-
 import static fr.ekinci.universalserializerbenchmark.utils.Utils.instanciateAndInitializeComplexClass;
 import static fr.ekinci.universalserializerbenchmark.utils.Utils.instanciateAndInitializeProtoComplexClass;
 
 /**
  * @author Gokan EKINCI
  */
-@Fork
 @BenchmarkMode(Mode.Throughput)
 public class SerializationBenchmark {
 	private static final ComplexTestClass objectToSerialize = instanciateAndInitializeComplexClass();
