@@ -2,22 +2,27 @@
 
 
 * JMH version: 1.20
-* VM version: JDK 1.8.0_144, VM 25.144-b01
-* VM invoker: /opt/java/jdk1.8.0_144/jre/bin/java
-* VM options: -Didea.launcher.port=7532 -Didea.launcher.bin.path=/opt/intellij/intellij_2016.1.4_ultimate/idea-IU-145.2070.6/bin -Dfile.encoding=UTF-8
+* VM version: JDK 1.8.0_91, VM 25.91-b15
+* VM invoker: C:\opt\jdk1.8.0_91\jre\bin\java.exe
+* VM options: -Dvisualvm.id=307294426819049 -Didea.launcher.port=7533 -Didea.launcher.bin.path=C:\opt\intellij-community-2016.1.2\bin -Dfile.encoding=UTF-8
 * Warmup: 20 iterations, 1 s each
 * Measurement: 20 iterations, 1 s each
 * Timeout: 10 min per iteration
 * Threads: 1 thread, will synchronize iterations
 * Benchmark mode: Throughput, ops/time
-* Benchmark: fr.ekinci.universalserializerbenchmark.SerializationBenchmark.benchBase64Serializer
+* Benchmark: fr.ekinci.universalserializerbenchmark.SerializationBenchmark.
 
 JMH output (**higher Score is better**):
 
-    Benchmark                                         Mode  Cnt        Score       Error  Units
-    SerializationBenchmark.benchBase64Serializer     thrpt  200    32280.926 ±   649.182  ops/s
-    SerializationBenchmark.benchBase64UrlSerializer  thrpt  200    31832.296 ±   481.519  ops/s
-    SerializationBenchmark.benchJavaSerializer       thrpt  200    37320.349 ±   351.941  ops/s
-    SerializationBenchmark.benchJsonSerializer       thrpt  200   340692.587 ±  3906.882  ops/s
-    SerializationBenchmark.benchProtobufSerializer   thrpt  200  1339570.892 ± 15076.530  ops/s
-    SerializationBenchmark.benchXmlSerializer        thrpt  200     9553.367 ±    99.079  ops/s
+    Run complete. Total time: 01:01:43
+
+    Benchmark                                             Mode  Cnt       Score       Error  Units
+    SerializationBenchmark.benchBase64BasicSerializer    thrpt  200   21409,969 ±  1109,881  ops/s
+    SerializationBenchmark.benchBase64MimeSerializer     thrpt  200   21976,016 ±   719,333  ops/s
+    SerializationBenchmark.benchBase64UrlSerializer      thrpt  200   24535,153 ±   531,182  ops/s
+    SerializationBenchmark.benchJavaSerializer           thrpt  200   28120,712 ±   151,490  ops/s
+    SerializationBenchmark.benchJsonSerializer           thrpt  200  246173,014 ± 10477,019  ops/s
+    SerializationBenchmark.benchProtobufSerializer       thrpt  200  947406,348 ± 31474,364  ops/s
+    SerializationBenchmark.benchThriftBinarySerializer   thrpt  200  359121,511 ± 11606,805  ops/s
+    SerializationBenchmark.benchThriftCompactSerializer  thrpt  200  473755,705 ±  1823,196  ops/s
+    SerializationBenchmark.benchXmlSerializer            thrpt  200    5956,681 ±    98,151  ops/s

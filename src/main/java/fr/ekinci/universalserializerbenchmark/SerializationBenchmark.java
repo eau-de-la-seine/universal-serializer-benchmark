@@ -6,18 +6,24 @@ import fr.ekinci.universalserializer.exception.SerializationException;
 import fr.ekinci.universalserializer.format.binary.java.JavaSerializer;
 import fr.ekinci.universalserializer.format.binary.protocolbuffers.ProtobufSerializer;
 import fr.ekinci.universalserializer.format.binary.protocolbuffers.exception.ProtobufSerializerException;
-import fr.ekinci.universalserializer.format.text.base64.AbstractBase64Serializer;
+import fr.ekinci.universalserializer.format.binary.thrift.ThriftOption;
+import fr.ekinci.universalserializer.format.binary.thrift.ThriftSerializer;
+import fr.ekinci.universalserializer.format.binary.thrift.exception.ThriftSerializerException;
+import fr.ekinci.universalserializer.format.text.base64.Base64Option;
 import fr.ekinci.universalserializer.format.text.base64.Base64Serializer;
-import fr.ekinci.universalserializer.format.text.base64.Base64UrlSerializer;
 import fr.ekinci.universalserializer.format.text.xml.XmlSerializer;
 import fr.ekinci.universalserializerbenchmark.pojo.ComplexTestClass;
 import fr.ekinci.universalserializerbenchmark.protocolbuffers.Protobuf;
+import fr.ekinci.universalserializerbenchmark.thrift.ThriftComplexTestClass;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
+
 import java.io.IOException;
+
 import static fr.ekinci.universalserializerbenchmark.utils.Utils.instanciateAndInitializeComplexClass;
 import static fr.ekinci.universalserializerbenchmark.utils.Utils.instanciateAndInitializeProtoComplexClass;
+import static fr.ekinci.universalserializerbenchmark.utils.Utils.instanciateAndInitializeThriftComplexClass;
 
 /**
  * @author Gokan EKINCI
@@ -26,10 +32,14 @@ import static fr.ekinci.universalserializerbenchmark.utils.Utils.instanciateAndI
 public class SerializationBenchmark {
 	private static final ComplexTestClass objectToSerialize = instanciateAndInitializeComplexClass();
 	private static final Protobuf.ComplexTestClass protoObjectToSerialize = instanciateAndInitializeProtoComplexClass();
-	private static final AbstractBase64Serializer<ComplexTestClass> base64Serializer = new Base64Serializer<>();
-	private static final AbstractBase64Serializer<ComplexTestClass> base64UrlSerializer = new Base64UrlSerializer<>();
+	private static final ThriftComplexTestClass thriftObjectToSerialize = instanciateAndInitializeThriftComplexClass();
+	private static final Base64Serializer<ComplexTestClass> base64BasicSerializer = new Base64Serializer<>(Base64Option.BASIC);
+	private static final Base64Serializer<ComplexTestClass> base64UrlSerializer = new Base64Serializer<>(Base64Option.URL);
+	private static final Base64Serializer<ComplexTestClass> base64MimeSerializer = new Base64Serializer<>(Base64Option.MIME);
 	private static final JavaSerializer<ComplexTestClass> javaSerializer = new JavaSerializer<>();
 	private static ProtobufSerializer<Protobuf.ComplexTestClass> protobufSerializer;
+	private static ThriftSerializer<ThriftComplexTestClass> thriftBinarySerializer;
+	private static ThriftSerializer<ThriftComplexTestClass> thriftCompactSerializer;
 	private static final XmlSerializer<ComplexTestClass> xmlSerializer = new XmlSerializer<>(ComplexTestClass.class);
 	private static final ObjectMapper jsonSerializer = new ObjectMapper();
 
@@ -40,15 +50,23 @@ public class SerializationBenchmark {
 			e.printStackTrace();
 			System.exit(-1);
 		}
+
+		try {
+			thriftBinarySerializer = new ThriftSerializer<>(ThriftComplexTestClass.class, ThriftOption.BINARY);
+			thriftCompactSerializer = new ThriftSerializer<>(ThriftComplexTestClass.class, ThriftOption.COMPACT);
+		} catch (ThriftSerializerException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 
 	@Benchmark
-	public void benchBase64Serializer() throws SerializationException, DeserializationException {
+	public void benchBase64BasicSerializer() throws SerializationException, DeserializationException {
 		// Serialization
-		String ser = base64Serializer.serialize(objectToSerialize);
+		String ser = base64BasicSerializer.serialize(objectToSerialize);
 
 		// Unserialization
-		base64Serializer.deserialize(ser);
+		base64BasicSerializer.deserialize(ser);
 
 	}
 
@@ -59,6 +77,15 @@ public class SerializationBenchmark {
 
 		// Unserialization
 		base64UrlSerializer.deserialize(ser);
+	}
+
+	@Benchmark
+	public void benchBase64MimeSerializer() throws SerializationException, DeserializationException {
+		// Serialization
+		String ser = base64MimeSerializer.serialize(objectToSerialize);
+
+		// Unserialization
+		base64MimeSerializer.deserialize(ser);
 	}
 
 	@Benchmark
@@ -77,6 +104,24 @@ public class SerializationBenchmark {
 
 		// Unserialization
 		protobufSerializer.deserialize(ser);
+	}
+
+	@Benchmark
+	public void benchThriftBinarySerializer() throws SerializationException, DeserializationException {
+		// Serialization
+		byte[] ser = thriftBinarySerializer.serialize(thriftObjectToSerialize);
+
+		// Unserialization
+		thriftBinarySerializer.deserialize(ser);
+	}
+
+	@Benchmark
+	public void benchThriftCompactSerializer() throws SerializationException, DeserializationException {
+		// Serialization
+		byte[] ser = thriftCompactSerializer.serialize(thriftObjectToSerialize);
+
+		// Unserialization
+		thriftCompactSerializer.deserialize(ser);
 	}
 
 	/**

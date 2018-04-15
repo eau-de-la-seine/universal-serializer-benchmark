@@ -3,6 +3,7 @@ package fr.ekinci.universalserializerbenchmark.utils;
 import com.google.protobuf.ByteString;
 import fr.ekinci.universalserializerbenchmark.pojo.ComplexTestClass;
 import fr.ekinci.universalserializerbenchmark.protocolbuffers.Protobuf;
+import fr.ekinci.universalserializerbenchmark.thrift.ThriftComplexTestClass;
 
 import java.util.ArrayList;
 
@@ -65,6 +66,34 @@ public class Utils {
 		}})
 
 		.build();
+
+		return obj;
+	}
+
+	public static ThriftComplexTestClass instanciateAndInitializeThriftComplexClass() {
+		final ThriftComplexTestClass obj = new ThriftComplexTestClass();
+		obj.setAttr1((byte) 1);
+		obj.setAttr2((short) 2);
+		obj.setAttr3(3);
+		obj.setAttr4(4L);
+		obj.setAttr5(5f);
+		obj.setAttr6(6d);
+		obj.setAttr7(true);
+		obj.setAttr8("8");
+		obj.setAttr9("&é'(-è_çà)=€$");
+
+		// Complex attributes initialization
+		obj.setAttr10(new ArrayList<Double>() {{
+			add(10.1d);
+			add(10.2d);
+			add(10.3d);
+		}});
+
+		obj.setAttr11(new ArrayList<String>() {{
+			add("11.1");
+			add("11.2");
+			add("11.3");
+		}});
 
 		return obj;
 	}
