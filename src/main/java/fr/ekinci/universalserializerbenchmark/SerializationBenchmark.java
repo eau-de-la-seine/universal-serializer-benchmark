@@ -3,6 +3,8 @@ package fr.ekinci.universalserializerbenchmark;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.ekinci.universalserializer.exception.DeserializationException;
 import fr.ekinci.universalserializer.exception.SerializationException;
+import fr.ekinci.universalserializer.format.binary.avro.AvroOption;
+import fr.ekinci.universalserializer.format.binary.avro.AvroSerializer;
 import fr.ekinci.universalserializer.format.binary.java.JavaSerializer;
 import fr.ekinci.universalserializer.format.binary.protocolbuffers.ProtobufSerializer;
 import fr.ekinci.universalserializer.format.binary.protocolbuffers.exception.ProtobufSerializerException;
@@ -40,6 +42,8 @@ public class SerializationBenchmark {
 	private static ProtobufSerializer<Protobuf.ComplexTestClass> protobufSerializer;
 	private static ThriftSerializer<ThriftComplexTestClass> thriftBinarySerializer;
 	private static ThriftSerializer<ThriftComplexTestClass> thriftCompactSerializer;
+	private static final AvroSerializer<ComplexTestClass> avroBinarySerializer = new AvroSerializer<>(ComplexTestClass.class, AvroOption.BINARY);
+	private static final AvroSerializer<ComplexTestClass> avroJsonSerializer = new AvroSerializer<>(ComplexTestClass.class, AvroOption.JSON);
 	private static final XmlSerializer<ComplexTestClass> xmlSerializer = new XmlSerializer<>(ComplexTestClass.class);
 	private static final ObjectMapper jsonSerializer = new ObjectMapper();
 
@@ -122,6 +126,24 @@ public class SerializationBenchmark {
 
 		// Unserialization
 		thriftCompactSerializer.deserialize(ser);
+	}
+
+	@Benchmark
+	public void benchAvroBinarySerializer() throws SerializationException, DeserializationException {
+		// Serialization
+		byte[] ser = avroBinarySerializer.serialize(objectToSerialize);
+
+		// Unserialization
+		avroBinarySerializer.deserialize(ser);
+	}
+
+	@Benchmark
+	public void benchAvroJsonSerializer() throws SerializationException, DeserializationException {
+		// Serialization
+		byte[] ser = avroJsonSerializer.serialize(objectToSerialize);
+
+		// Unserialization
+		avroJsonSerializer.deserialize(ser);
 	}
 
 	/**
